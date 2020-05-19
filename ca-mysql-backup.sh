@@ -2,8 +2,7 @@
 
 # Author: Ashley Cawley // acawley@cloudabove.com // @cloudabove
 
-# Description: A script to backup MySQL databases to individual
-#		.sql.gz files, whilst excluding the following:
+# Description: A script to backup MySQL databases to individual .sql.gz files, whilst excluding the following:
 #		- information_schema
 #		- performance_schema
 #		- sys
