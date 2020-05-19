@@ -25,28 +25,33 @@ function DATE_AND_TIME () {
 
 # Main Script
 
+# Strip out excluded databases from the list of database names
 for EXCLUDED_NAME in "${EXCLUSIONS[@]}"
 do
 	MYSQL_DATABASES=$(echo "$MYSQL_DATABASES" | sed s/"$EXCLUDED_NAME"//g)
 done
 
+# Switches list of databases from a variable to an array for easier handling
 array1=(`echo $MYSQL_DATABASES`)
 
-
+# Loop for handling each database backup and purging of obsolete backups
 for DBNAME in "${array1[@]}"
 do
+	# Creates destination folder specific to individual database and backs-up into it
 	mkdir -p $BACKUP_DESTINATION/$DBNAME
 	mysqldump $DBNAME | gzip -c > $BACKUP_DESTINATION/$DBNAME/${DBNAME}-`DATE_AND_TIME`.sql.gz
 
+	# Takes note of the number of backups within that folder
 	NUMBER_OF_CURRENT_BACKUPS=$(ls $BACKUP_DESTINATION/$DBNAME/ | wc -w)
 
 	echo "Number of $DBNAME backups: $NUMBER_OF_CURRENT_BACKUPS"
 
+	# Checks to see if the number of backups exceeds that of the retention policy
 	if [ "$NUMBER_OF_CURRENT_BACKUPS" -gt "$NUMBER_OF_HOURLY_BACKUPS_TO_RETAIN" ]
 	then
 		echo "Number of $DBNAME backups exceeds retention policy!!!!"
 	
-		# Loop to remove oldest backup first
+		# If the number of backups exceeds then initiates loop to remove old backups
 		while [ "$NUMBER_OF_CURRENT_BACKUPS" -gt "$NUMBER_OF_HOURLY_BACKUPS_TO_RETAIN" ]
 		do
 			ARRAY_OF_BACKUP_FILES_OLDEST_FIRST=(`ls -tr $BACKUP_DESTINATION/$DBNAME/`)
