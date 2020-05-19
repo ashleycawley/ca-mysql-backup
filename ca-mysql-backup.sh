@@ -43,18 +43,18 @@ do
 	# Takes note of the number of backups within that folder
 	NUMBER_OF_CURRENT_BACKUPS=$(ls $BACKUP_DESTINATION/$DBNAME/ | wc -w)
 
-	echo "Number of $DBNAME backups: $NUMBER_OF_CURRENT_BACKUPS"
+	#echo "Number of $DBNAME backups: $NUMBER_OF_CURRENT_BACKUPS"
 
 	# Checks to see if the number of backups exceeds that of the retention policy
 	if [ "$NUMBER_OF_CURRENT_BACKUPS" -gt "$NUMBER_OF_HOURLY_BACKUPS_TO_RETAIN" ]
 	then
-		echo "Number of $DBNAME backups exceeds retention policy!!!!"
+		#echo "Number of $DBNAME backups exceeds retention policy!!!!"
 	
 		# If the number of backups exceeds then initiates loop to remove old backups
 		while [ "$NUMBER_OF_CURRENT_BACKUPS" -gt "$NUMBER_OF_HOURLY_BACKUPS_TO_RETAIN" ]
 		do
 			ARRAY_OF_BACKUP_FILES_OLDEST_FIRST=(`ls -tr $BACKUP_DESTINATION/$DBNAME/`)
-			echo "Item on the list to purge: ${ARRAY_OF_BACKUP_FILES_OLDEST_FIRST[0]}"
+			# echo "Item on the list to purge: ${ARRAY_OF_BACKUP_FILES_OLDEST_FIRST[0]}"
 			rm -f "$BACKUP_DESTINATION/$DBNAME/${ARRAY_OF_BACKUP_FILES_OLDEST_FIRST[0]}"
 			
 			# Re-calculate number of backups for while loop:
